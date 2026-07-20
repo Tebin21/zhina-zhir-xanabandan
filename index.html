@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ckb" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="بانگهێشتنامەی نیشانی ژیر و ژینه — 11ی نۆڤەمبەری 2026">
+  <meta name="theme-color" content="#3A0501">
+  <link rel="preload" href="assets/fonts/xoshnus-nizar-cocon.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/great-vibes.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/images/vivi-poster.jpg" as="image">
+  <link rel="stylesheet" href="style.css">
+  <title>بانگهێشتنامەی نیشان — ژیر ❤ ژینه</title>
+</head>
+<body>
+
+  <!-- Icon sprite: reused everywhere via <use>, never duplicated markup -->
+  <svg class="sr-only" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="icon-play" viewBox="0 0 24 24"><path d="M7 4.5 L19 12 L7 19.5 Z" fill="currentColor"/></symbol>
+      <symbol id="icon-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/></symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 2"/></symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5s7-6.6 7-12A7 7 0 1 0 5 9.5c0 5.4 7 12 7 12Z"/><circle cx="12" cy="9.3" r="2.4"/></symbol>
+      <symbol id="icon-dress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5l1 4-2 1.3L15 21H9l1.5-12.7L8.5 7Z"/></symbol>
+      <symbol id="icon-abaya" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.4c1-.6 2-1 3-1s2 .4 3 1"/><path d="M9 3.4 7.5 5.2c-.3 2.7-.9 5.5-1.5 8.4-.5 2.4-.8 4.9-1 7.5"/><path d="M15 3.4l1.5 1.8c.3 2.7.9 5.5 1.5 8.4.5 2.4.8 4.9 1 7.5"/><path d="M9.3 8.6h5.4"/></symbol>
+      <symbol id="icon-corner-flourish" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17V6a4 4 0 0 1 4-4h11"/><path d="M2 25c8.5 0 15-6.5 15-15"/><circle cx="17" cy="10" r="1.6" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-welcome" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9.5L12 4l8 5.5V21"/><path d="M9.5 21v-6h5v6"/></symbol>
+      <symbol id="icon-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v8a2.5 2.5 0 0 0 5 0V3M8.5 3v8M6 11v10M17.5 3c-1.6 0-3 2-3 5.5S15.9 13 17.5 13m0-10v18"/></symbol>
+      <symbol id="icon-henna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.5 3 5.5 6.6 5.5 9.8A5.5 5.5 0 0 1 12 18a5.5 5.5 0 0 1-5.5-5.2C6.5 9.6 8.5 6 12 3Z"/></symbol>
+      <symbol id="icon-dance" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="6" r="2"/><path d="M8 21l2-6 2.5 1.5L15 21M6 12l3-3 3 2 4-2M10 9 8 12"/></symbol>
+      <symbol id="icon-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4Z"/><circle cx="12" cy="13.3" r="3.3"/></symbol>
+      <symbol id="icon-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.6-4.7-10-9.6C.6 7.4 2.6 4 6 4c2 0 3.6 1.1 4.6 2.7C11.4 5.1 13 4 15 4c3.4 0 5.4 3.4 4 6.9-2.4 4.9-10 9.6-10 9.6Z"/></symbol>
+
+      <!-- Realistic luxury rose blossom: three tiers of narrow, asymmetric,
+           curled petals (each tier its own hand-shaped path, not a mirrored
+           teardrop) painted outer -> inner so the bloom overlaps and deepens
+           toward the center, plus a tightly wrapped bud. Three gradients move
+           from a deep, semi-transparent outer edge to a bright inner glow,
+           approximating how light catches real rose petals. Reused via <use>
+           everywhere a rose appears. -->
+      <radialGradient id="rose-grad-outer" cx="38%" cy="82%" r="88%">
+        <stop offset="0%" stop-color="#B23A2E"/>
+        <stop offset="48%" stop-color="#7C0902"/>
+        <stop offset="100%" stop-color="#3A0501" stop-opacity=".5"/>
+      </radialGradient>
+      <radialGradient id="rose-grad-mid" cx="40%" cy="78%" r="82%">
+        <stop offset="0%" stop-color="#D14A34"/>
+        <stop offset="52%" stop-color="#9C0F08"/>
+        <stop offset="100%" stop-color="#5C0A03" stop-opacity=".72"/>
+      </radialGradient>
+      <radialGradient id="rose-grad-inner" cx="42%" cy="74%" r="76%">
+        <stop offset="0%" stop-color="#EE6A46"/>
+        <stop offset="55%" stop-color="#B71C13"/>
+        <stop offset="100%" stop-color="#7C0902"/>
+      </radialGradient>
+      <symbol id="icon-rose" viewBox="0 0 100 100">
+        <g class="rose__ring rose__ring--outer">
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(0 50 60)"/>
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(55 50 60)"/>
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(108 50 60)"/>
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(152 50 60)"/>
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(205 50 60)"/>
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(255 50 60)"/>
+          <path class="rose__petal rose__petal--outer" d="M50,60 C40,53 35,32 42,12 C45,4 55,3 59,12 C65,26 61,46 53,58 C52,59.5 51,60 50,60 Z" transform="rotate(308 50 60)"/>
+        </g>
+        <g class="rose__ring rose__ring--mid">
+          <path class="rose__petal rose__petal--mid" d="M50,60 C44,55 41,42 46,26 C48,20 53,19 55,26 C58,35 56,48 52,58 C51.3,59.3 50.6,60 50,60 Z" transform="rotate(25 50 60)"/>
+          <path class="rose__petal rose__petal--mid" d="M50,60 C44,55 41,42 46,26 C48,20 53,19 55,26 C58,35 56,48 52,58 C51.3,59.3 50.6,60 50,60 Z" transform="rotate(85 50 60)"/>
+          <path class="rose__petal rose__petal--mid" d="M50,60 C44,55 41,42 46,26 C48,20 53,19 55,26 C58,35 56,48 52,58 C51.3,59.3 50.6,60 50,60 Z" transform="rotate(140 50 60)"/>
+          <path class="rose__petal rose__petal--mid" d="M50,60 C44,55 41,42 46,26 C48,20 53,19 55,26 C58,35 56,48 52,58 C51.3,59.3 50.6,60 50,60 Z" transform="rotate(195 50 60)"/>
+          <path class="rose__petal rose__petal--mid" d="M50,60 C44,55 41,42 46,26 C48,20 53,19 55,26 C58,35 56,48 52,58 C51.3,59.3 50.6,60 50,60 Z" transform="rotate(250 50 60)"/>
+          <path class="rose__petal rose__petal--mid" d="M50,60 C44,55 41,42 46,26 C48,20 53,19 55,26 C58,35 56,48 52,58 C51.3,59.3 50.6,60 50,60 Z" transform="rotate(320 50 60)"/>
+        </g>
+        <g class="rose__ring rose__ring--inner">
+          <path class="rose__petal rose__petal--inner" d="M50,60 C46,56 45,47 48,38 C49,34 52,34 53,39 C55,45 53,53 51,58.5 C50.6,59.4 50.3,60 50,60 Z" transform="rotate(10 50 60)"/>
+          <path class="rose__petal rose__petal--inner" d="M50,60 C46,56 45,47 48,38 C49,34 52,34 53,39 C55,45 53,53 51,58.5 C50.6,59.4 50.3,60 50,60 Z" transform="rotate(82 50 60)"/>
+          <path class="rose__petal rose__petal--inner" d="M50,60 C46,56 45,47 48,38 C49,34 52,34 53,39 C55,45 53,53 51,58.5 C50.6,59.4 50.3,60 50,60 Z" transform="rotate(154 50 60)"/>
+          <path class="rose__petal rose__petal--inner" d="M50,60 C46,56 45,47 48,38 C49,34 52,34 53,39 C55,45 53,53 51,58.5 C50.6,59.4 50.3,60 50,60 Z" transform="rotate(226 50 60)"/>
+          <path class="rose__petal rose__petal--inner" d="M50,60 C46,56 45,47 48,38 C49,34 52,34 53,39 C55,45 53,53 51,58.5 C50.6,59.4 50.3,60 50,60 Z" transform="rotate(298 50 60)"/>
+        </g>
+        <path class="rose__bud" d="M50,60 C48,57 47.5,52 50,46 C52.5,52 52,57 50,60 Z" transform="rotate(18 50 60)"/>
+      </symbol>
+
+      <!-- Premium ornamental divider: symmetric four-petal bloom flanked by
+           two small leaves on each side, with thin gold lines tapering out
+           to nothing at the edges (via a mask, see .ornate-divider in CSS).
+           One shape, reused via <use> everywhere a section divider appears
+           so every "chapter break" in the invitation reads identically. -->
+      <symbol id="icon-ornate-divider" viewBox="0 0 240 36">
+        <path class="ornate-divider__line" d="M6,18 H88"/>
+        <path class="ornate-divider__line" d="M152,18 H234"/>
+
+        <path class="ornate-divider__leaf" d="M0,0 C-3.2,-2.4 -3.2,-6.4 0,-9 C3.2,-6.4 3.2,-2.4 0,0 Z" transform="translate(90 18) rotate(-35)"/>
+        <path class="ornate-divider__leaf" d="M0,0 C-3.2,-2.4 -3.2,-6.4 0,-9 C3.2,-6.4 3.2,-2.4 0,0 Z" transform="translate(99 18) rotate(215)"/>
+        <path class="ornate-divider__leaf" d="M0,0 C-3.2,-2.4 -3.2,-6.4 0,-9 C3.2,-6.4 3.2,-2.4 0,0 Z" transform="translate(150 18) rotate(35)"/>
+        <path class="ornate-divider__leaf" d="M0,0 C-3.2,-2.4 -3.2,-6.4 0,-9 C3.2,-6.4 3.2,-2.4 0,0 Z" transform="translate(141 18) rotate(145)"/>
+
+        <g class="ornate-divider__bloom">
+          <path d="M0,0 C-5,-3.6 -5,-9.6 0,-13 C5,-9.6 5,-3.6 0,0 Z" transform="translate(120 18)"/>
+          <path d="M0,0 C-5,-3.6 -5,-9.6 0,-13 C5,-9.6 5,-3.6 0,0 Z" transform="translate(120 18) rotate(90)"/>
+          <path d="M0,0 C-5,-3.6 -5,-9.6 0,-13 C5,-9.6 5,-3.6 0,0 Z" transform="translate(120 18) rotate(180)"/>
+          <path d="M0,0 C-5,-3.6 -5,-9.6 0,-13 C5,-9.6 5,-3.6 0,0 Z" transform="translate(120 18) rotate(270)"/>
+        </g>
+        <circle class="ornate-divider__ring" cx="120" cy="18" r="4.4"/>
+        <circle class="ornate-divider__gem" cx="120" cy="18" r="1.6"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Loader: waits for font + hero image + video + min splash time.
+       Cinematic splash — luxury glow, drifting gold particles/petals, the
+       couple's names in script type, and a slow gold ring holding their
+       initials. Purely decorative; screen readers get the sr-only status line. -->
+  <div id="loader" class="loader" role="status" aria-live="polite">
+    <div class="loader__particles" aria-hidden="true">
+      <span class="loader__particle loader__particle--1"></span>
+      <span class="loader__particle loader__particle--2 loader__particle--petal"></span>
+      <span class="loader__particle loader__particle--3"></span>
+      <span class="loader__particle loader__particle--4 loader__particle--petal"></span>
+      <span class="loader__particle loader__particle--5"></span>
+      <span class="loader__particle loader__particle--6 loader__particle--petal"></span>
+      <span class="loader__particle loader__particle--7"></span>
+    </div>
+
+    <div class="loader__stage" aria-hidden="true">
+      <div class="loader__names">
+        <span class="loader__name loader__name--a">Zhina</span>
+        <span class="loader__heart">♡</span>
+        <span class="loader__name loader__name--b">Zhir</span>
+      </div>
+
+      <div class="loader__mark">
+        <svg class="loader__mark-svg" viewBox="0 0 100 100"><circle class="loader__ring-bg" cx="50" cy="50" r="42"/><circle class="loader__ring" cx="50" cy="50" r="42"/></svg>
+        <span class="loader__mark-letters">
+          <span class="loader__mark-letter">Z</span>
+          <span class="loader__mark-heart">♡</span>
+          <span class="loader__mark-letter">Z</span>
+        </span>
+      </div>
+    </div>
+
+    <span class="sr-only">چاوەڕوانبە، بانگهێشتنامەکە ئامادە دەکرێت…</span>
+  </div>
+
+  <!-- Video gate: single tap starts the ~5s intro clip, no skip, no controls -->
+  <div id="video-gate" class="video-gate" inert>
+    <video id="intro-video" class="video-gate__video" playsinline muted disableremoteplayback aria-hidden="true" tabindex="-1" poster="assets/images/vivi-poster.jpg"></video>
+    <button id="video-gate__play" type="button" class="video-gate__play" aria-label="دەستپێکردنی ڤیدیۆی بانگهێشت">
+      <svg class="video-gate__play-icon" aria-hidden="true"><use href="#icon-play"/></svg>
+    </button>
+  </div>
+
+  <div class="ambient-bg" aria-hidden="true">
+    <span class="ambient-bg__blob ambient-bg__blob--a"></span>
+    <span class="ambient-bg__blob ambient-bg__blob--b"></span>
+    <span class="ambient-bg__blob ambient-bg__blob--c"></span>
+  </div>
+
+  <main id="main" class="site" hidden tabindex="-1">
+    <h1 class="sr-only">بانگهێشتنامەی نیشانی ژیر و ژینه</h1>
+
+    <!-- First section: the pre-designed invitation card image, full-bleed cinematic hero -->
+    <section id="invitation-card" class="invitation-card" aria-label="کارتی بانگهێشتنامه">
+      <picture>
+        <source type="image/webp" srcset="assets/images/zhina-360.webp 360w, assets/images/zhina-540.webp 540w, assets/images/zhina-720.webp 720w, assets/images/zhina-1080.webp 1080w" sizes="100vw">
+        <img
+          id="invitation-image"
+          class="invitation-card__img"
+          width="1080" height="1920"
+          fetchpriority="high"
+          alt="کارتی بانگهێشتنامەی نیشان، دەروازەیەکی گوڵ و ناوی ژیر و ژینه"
+          src="assets/images/zhina-720.jpg"
+          srcset="assets/images/zhina-360.jpg 360w, assets/images/zhina-540.jpg 540w, assets/images/zhina-720.jpg 720w, assets/images/zhina-1080.jpg 1080w"
+          sizes="100vw"
+          data-reveal data-reveal-type="scale">
+      </picture>
+    </section>
+
+    <!-- Hero card: one premium glass "invitation card" holding the couple's
+         names inside a framed ornamental header, the Kurdish invitation
+         text, and the romantic quote in its own small glass panel. -->
+    <section id="hero-names" class="hero-names" aria-label="Zhina and Zhir">
+      <span class="hero-names__ambient-glow" aria-hidden="true"></span>
+
+      <div class="hero-card" data-reveal data-reveal-type="hero">
+        <span class="hero-card__corner hero-card__corner--tl" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+        <span class="hero-card__corner hero-card__corner--tr" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+        <span class="hero-card__corner hero-card__corner--bl" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+        <span class="hero-card__corner hero-card__corner--br" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+
+        <div class="hero-card__header">
+          <span class="hero-card__header-glow" aria-hidden="true"></span>
+          <svg class="hero-card__bloom hero-card__bloom--l" aria-hidden="true" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+          <svg class="hero-card__bloom hero-card__bloom--r" aria-hidden="true" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+
+          <svg class="ornate-divider hero-card__ornament-line hero-card__ornament-line--top" aria-hidden="true" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg>
+
+          <div class="hero-names__row" dir="ltr">
+            <span class="hero-names__name hero-names__name--a">Zhina</span>
+            <span class="hero-names__heart" aria-hidden="true">♡</span>
+            <span class="hero-names__name hero-names__name--b">Zhir</span>
+          </div>
+
+          <svg class="ornate-divider hero-card__ornament-line hero-card__ornament-line--bottom" aria-hidden="true" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg>
+        </div>
+
+        <div class="hero-names__invite" dir="rtl" lang="ckb">
+          <p class="hero-names__line hero-names__line--1">زۆر خۆشحاڵ دەبین بە ئامادەبوونتان لە بۆنی خەنەبەندانی ژینە.</p>
+          <p class="hero-names__line hero-names__line--2">ئامادەبوونی ئێوە خۆشەویستان، جوانترین دیارییە بۆ ئەو شەوەی پڕ لە خۆشی و یادەوەریە.</p>
+        </div>
+
+        <div class="hero-card__quote-panel hero-names__line--3">
+          <p class="hero-names__quote">کاتێک دوو دڵ یەکتر هەڵدەبژێرن، ژیان بە جوانترین چیرۆکی خۆی دەست پێدەکات. خۆشەویستی دەبێتە زمانێک بێ وشە، دڵەکان بە یەک ڕێگا دەبەستێت، و هەر ڕۆژێک بە بەڵێنێکی نوێ و هیوایەکی تازە دەگوزەرێت، تا هەموو ساتەکان ببنە یادەوەرییەکی نەمر</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true" data-reveal><svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg></div>
+
+    <!-- Countdown -->
+    <section id="countdown" class="section glass-section" aria-labelledby="countdown-heading" data-reveal>
+      <p class="section__eyebrow">چاوەڕوانی</p>
+      <h2 id="countdown-heading" class="section__title">چەند ڕۆژی ماوە؟</h2>
+      <div class="countdown-unit">
+        <div class="countdown" role="timer" aria-live="off">
+          <div class="glass-card countdown__tile" data-reveal><span class="countdown__num" data-cd="d">00</span><small>ڕۆژ</small></div>
+          <div class="glass-card countdown__tile" data-reveal><span class="countdown__num" data-cd="h">00</span><small>کاژێر</small></div>
+          <div class="glass-card countdown__tile" data-reveal><span class="countdown__num" data-cd="m">00</span><small>خولەک</small></div>
+          <div class="glass-card countdown__tile" data-reveal><span class="countdown__num" data-cd="s">00</span><small>چرکە</small></div>
+        </div>
+
+        <span class="countdown-unit__link" aria-hidden="true"></span>
+
+        <div class="countdown-quote" data-reveal data-reveal-type="scale">
+          <span class="countdown-quote__glow" aria-hidden="true"></span>
+          <p class="countdown-quote__text" lang="ckb">هەر چرکەساتێک کە دەگوزەرێت، هەنگاوێکمان لە جوانترین شەوی ژیان نزیکتر دەکات. تکایە چاوەڕێمان بن، تا بە یەکەوە چیرۆکێکی نوێ لە خۆشەویستی، خۆشی و یادەوەرییەکی نەمر بنووسین.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true" data-reveal><svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg></div>
+
+    <!-- Calendar -->
+    <section id="calendar" class="section glass-section" aria-labelledby="calendar-heading" data-reveal>
+      <p class="section__eyebrow">پەیجی مانگ</p>
+      <h2 id="calendar-heading" class="section__title">بەرواری تایبەت</h2>
+      <div class="glass-card calendar" data-reveal data-reveal-type="scale">
+        <div class="calendar__header">نۆڤەمبەر 2027</div>
+        <div class="calendar__weekdays" id="calendar-weekdays"></div>
+        <div class="calendar__grid" id="calendar-grid"></div>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true" data-reveal><svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg></div>
+
+    <!-- Location — one unified luxury card holds everything: icon, title,
+         venue name, city, description, embedded map, and CTA. -->
+    <section id="location" class="section venue-section" aria-labelledby="location-heading" data-reveal>
+      <div class="venue-card" data-reveal>
+        <div class="venue-card__blooms" aria-hidden="true">
+          <svg class="venue-card__bloom venue-card__bloom--tl" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+          <svg class="venue-card__bloom venue-card__bloom--tr" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+          <svg class="venue-card__bloom venue-card__bloom--bl" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+          <svg class="venue-card__bloom venue-card__bloom--br" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+        </div>
+        <div class="venue-card__glow" aria-hidden="true"></div>
+
+        <p class="venue-card__eyebrow">شوێن</p>
+        <svg class="venue-card__icon" aria-hidden="true"><use href="#icon-pin"/></svg>
+        <h2 id="location-heading" class="venue-card__title">شوێنی ئاهەنگ</h2>
+        <p class="venue-card__venue">هۆتێل ڕامادا</p>
+        <p class="venue-card__city">سلێمانی</p>
+        <p class="venue-card__desc">لە ناوەندێکی شکۆدار و ئارام، هۆتێل ڕامادا میوانداری ئێوە دەکات بۆ شەوێکی پڕ لە خۆشی، ڕووناکی و خۆشەویستی.</p>
+
+        <div class="venue-card__map">
+          <iframe
+            class="venue-card__iframe"
+            src="https://www.google.com/maps?q=Ramada+Hotel,+Sulaymaniyah,+Iraq&output=embed"
+            title="نەخشەی ڕامادا هۆتێل، سلێمانی"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </div>
+
+        <a class="btn btn--gold venue-card__btn" id="maps-link" href="https://www.google.com/maps/search/?api=1&query=Ramada+Hotel%2C+Sulaymaniyah%2C+Iraq" target="_blank" rel="noopener noreferrer">
+          کلیلک بکە بۆ بینینی شوێنەکە    
+        </a>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true" data-reveal><svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg></div>
+
+    <!-- Dress code -->
+    <section id="dress-code" class="section glass-section dress-section" aria-labelledby="dresscode-heading" data-reveal>
+      <div class="dress-section__glow" aria-hidden="true"></div>
+      <div class="dress-section__blooms" aria-hidden="true">
+        <svg class="dress-section__bloom dress-section__bloom--tl" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+        <svg class="dress-section__bloom dress-section__bloom--tr" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+        <svg class="dress-section__bloom dress-section__bloom--bl" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+        <svg class="dress-section__bloom dress-section__bloom--br" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+      </div>
+      <p class="section__eyebrow">جلوبەرگ</p>
+      <h2 id="dresscode-heading" class="section__title">رەنگی جلوبەرگی خانمان</h2>
+      <p class="dress-section__subtitle">پێشنیارمان بۆ ڕەنگ و شێوازی جلوبەرگ</p>
+
+      <div class="glass-card dress-card" data-reveal data-reveal-type="scale">
+        <span class="dress-card__corner dress-card__corner--tl" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+        <span class="dress-card__corner dress-card__corner--tr" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+        <span class="dress-card__corner dress-card__corner--bl" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+        <span class="dress-card__corner dress-card__corner--br" aria-hidden="true"><svg><use href="#icon-corner-flourish"/></svg></span>
+
+        <div class="dress-card__section">
+          <p class="dress-card__kicker">ڕەنگی پێشنیارکراو</p>
+          <ul class="color-trio">
+            <li class="color-trio__item" data-reveal>
+              <span class="color-ribbon">
+                <span class="color-ribbon__badge" title="ڕەنگی پێشنیارکراو"><span class="sr-only">ڕەنگی پێشنیارکراو</span></span>
+                <span class="color-ribbon__swatch" style="--swatch-color:#5C0A1E" aria-hidden="true"></span>
+                <span class="color-ribbon__label">شەرابی تۆخ</span>
+              </span>
+            </li>
+            <li class="color-trio__item" data-reveal>
+              <span class="color-ribbon">
+                <span class="color-ribbon__badge" title="ڕەنگی پێشنیارکراو"><span class="sr-only">ڕەنگی پێشنیارکراو</span></span>
+                <span class="color-ribbon__swatch" style="--swatch-color:#0B6B4F" aria-hidden="true"></span>
+                <span class="color-ribbon__label">سەوزی زمرد</span>
+              </span>
+            </li>
+            <li class="color-trio__item" data-reveal>
+              <span class="color-ribbon">
+                <span class="color-ribbon__badge" title="ڕەنگی پێشنیارکراو"><span class="sr-only">ڕەنگی پێشنیارکراو</span></span>
+                <span class="color-ribbon__swatch" style="--swatch-color:#16213E" aria-hidden="true"></span>
+                <span class="color-ribbon__label">شینی تۆخ</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="dress-card__divider" aria-hidden="true"></div>
+
+        <div class="dress-card__section">
+          <p class="dress-card__kicker">شێوازی جلوبەرگ</p>
+          <div class="style-duo">
+            <div class="style-duo__card" data-reveal>
+              <span class="style-duo__name">عەزی</span>
+            </div>
+            <div class="style-duo__card" data-reveal>
+              <span class="style-duo__name">جلی کوردی</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true" data-reveal><svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg></div>
+
+    <!-- Timeline -->
+    <section id="timeline" class="section" aria-labelledby="timeline-heading" data-reveal>
+      <p class="section__eyebrow">بەرنامە</p>
+      <h2 id="timeline-heading" class="section__title">بەرنامەی ئاهەنگ</h2>
+
+      <div class="timeline-ornament timeline-ornament--top" aria-hidden="true" data-reveal>
+        <svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg>
+      </div>
+
+      <div class="timeline-journey">
+        <div class="timeline-journey__row">
+          <article class="timeline-card" data-reveal data-order="1">
+            <span class="timeline-card__icon-wrap"><svg class="timeline-card__icon" aria-hidden="true"><use href="#icon-welcome"/></svg></span>
+            <span class="timeline-card__time"><span class="timeline-card__time-value" dir="ltr">6:00</span><span class="timeline-card__time-word">شەو</span></span>
+            <span class="timeline-card__label">پێشوازی میوانان</span>
+          </article>
+          <article class="timeline-card" data-reveal data-order="2">
+            <span class="timeline-card__icon-wrap"><svg class="timeline-card__icon" aria-hidden="true"><use href="#icon-food"/></svg></span>
+            <span class="timeline-card__time"><span class="timeline-card__time-value" dir="ltr">7:00</span><span class="timeline-card__time-word">شەو</span></span>
+            <span class="timeline-card__label">خواردن</span>
+          </article>
+        </div>
+
+        <div class="timeline-journey__joint" data-reveal data-order="joint1" aria-hidden="true">
+          <svg class="timeline-journey__branch timeline-journey__branch--a" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M100,0 C100,15 0,10 0,25 L0,75 C0,90 100,85 100,100"/>
+          </svg>
+          <svg class="timeline-journey__branch timeline-journey__branch--b" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0,0 C0,15 100,10 100,25 L100,75 C100,90 0,85 0,100"/>
+          </svg>
+          <span class="timeline-journey__node"></span>
+        </div>
+
+        <div class="timeline-journey__row">
+          <article class="timeline-card" data-reveal data-order="3">
+            <span class="timeline-card__icon-wrap"><svg class="timeline-card__icon" aria-hidden="true"><use href="#icon-henna"/></svg></span>
+            <span class="timeline-card__time"><span class="timeline-card__time-value" dir="ltr">8:00</span><span class="timeline-card__time-word">شەو</span></span>
+            <span class="timeline-card__label">دەستپێکردنی خەنەبەندان</span>
+          </article>
+          <article class="timeline-card" data-reveal data-order="4">
+            <span class="timeline-card__icon-wrap"><svg class="timeline-card__icon" aria-hidden="true"><use href="#icon-dance"/></svg></span>
+            <span class="timeline-card__time"><span class="timeline-card__time-value" dir="ltr">9:00</span><span class="timeline-card__time-word">شەو</span></span>
+            <span class="timeline-card__label">هەڵپەڕکێ</span>
+          </article>
+        </div>
+
+        <div class="timeline-journey__joint" data-reveal data-order="joint2" aria-hidden="true">
+          <svg class="timeline-journey__branch timeline-journey__branch--a" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M100,0 C100,15 0,10 0,25 L0,75 C0,90 100,85 100,100"/>
+          </svg>
+          <svg class="timeline-journey__branch timeline-journey__branch--b" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0,0 C0,15 100,10 100,25 L100,75 C100,90 0,85 0,100"/>
+          </svg>
+          <span class="timeline-journey__node"></span>
+        </div>
+
+        <div class="timeline-journey__row timeline-journey__row--single">
+          <article class="timeline-card" data-reveal data-order="5">
+            <span class="timeline-card__icon-wrap"><svg class="timeline-card__icon" aria-hidden="true"><use href="#icon-camera"/></svg></span>
+            <span class="timeline-card__time"><span class="timeline-card__time-value" dir="ltr">10:00</span><span class="timeline-card__time-word">شەو</span></span>
+            <span class="timeline-card__label">وێنەگرتن</span>
+          </article>
+        </div>
+      </div>
+
+      <div class="timeline-ornament timeline-ornament--bottom" aria-hidden="true" data-reveal>
+        <svg class="ornate-divider" viewBox="0 0 240 36"><use href="#icon-ornate-divider"/></svg>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p class="site-footer__names">ژیر <span class="site-footer__heart">❤</span> ژینه</p>
+      <p class="site-footer__date">11 نۆڤەمبەر 2027 · سلێمانی</p>
+    </footer>
+
+    <!-- Final "I'll be there" CTA: click fades the button and triggers a
+         5s celebration (flowers + petals falling again into the existing
+         petal-burst layer below) plus a centered frosted-glass thank-you
+         panel. See EndingCelebration in script.js. -->
+    <section id="ending-cta-section" class="ending-cta-section" aria-label="پشتڕاستکردنەوەی ئامادەبوون">
+      <button type="button" id="ending-cta-btn" class="ending-cta-btn">
+        <span>ئامادە دەبم</span>
+      </button>
+    </section>
+
+    <div class="ending-message" id="ending-message" aria-live="polite">
+      <div class="ending-message__panel">
+        <p class="ending-message__text" dir="rtl" lang="ckb">زۆر خۆشحاڵ بووین بە ئامادەبوونت 💛</p>
+      </div>
+    </div>
+
+    <!-- A small handful of small, faint roses continuously falling from the
+         upper-right/upper-center of the screen. Each is its own infinitely
+         looping animation, so the instant one drifts past the bottom of the
+         viewport it fades back in at the top — the flow never stops. -->
+    <div class="mini-roses" aria-hidden="true">
+      <svg class="mini-rose mini-rose--1" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+      <svg class="mini-rose mini-rose--2" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+      <svg class="mini-rose mini-rose--3" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+      <svg class="mini-rose mini-rose--4" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+      <svg class="mini-rose mini-rose--5" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+      <svg class="mini-rose mini-rose--6" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+    </div>
+
+    <!-- A moderate handful of petals drifting on the wind from the upper-center
+         and upper-right of the screen toward the middle of the page, each with
+         its own size/speed/rotation/delay/opacity -->
+    <div class="wind-petals" aria-hidden="true">
+      <span class="wind-petal wind-petal--1"></span>
+      <span class="wind-petal wind-petal--2"></span>
+      <span class="wind-petal wind-petal--3"></span>
+      <span class="wind-petal wind-petal--4"></span>
+      <span class="wind-petal wind-petal--5"></span>
+      <span class="wind-petal wind-petal--6"></span>
+    </div>
+
+    <div class="petal-burst-layer" id="petal-burst-layer" aria-hidden="true"></div>
+
+    <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false" aria-label="لێدانی مۆسیقا">
+      <svg class="music-toggle__icon" aria-hidden="true"><use href="#icon-play"/></svg>
+    </button>
+    <audio id="bg-music" src="assets/audio/music.mp3" preload="auto" loop></audio>
+  </main>
+
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
