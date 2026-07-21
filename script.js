@@ -247,6 +247,13 @@ const VideoGateController = {
         URL.revokeObjectURL(this.video.dataset.blobUrl);
       }
       onEnded();
+      // The gate is single-use and never shown again — merely hiding it
+      // (opacity/visibility) leaves its several infinite CSS animations
+      // (ring glow, shimmer, play-button pulse) still ticking in the
+      // background, including paint-inducing filter/background-position
+      // ones, for the rest of the session. Remove it outright once its own
+      // fade-out finishes so nothing keeps animating off-screen forever.
+      this.gate.addEventListener('transitionend', () => this.gate.remove(), { once: true });
     }, { once: true });
   }
 };
@@ -456,17 +463,37 @@ const CustomCursor = {
     this.bound = true;
     this.dot = document.getElementById('cursor-dot');
     this.ring = document.getElementById('cursor-ring');
-    this.onMove = (e) => { this.target.x = e.clientX; this.target.y = e.clientY; };
+    this.looping = false;
+    this.onMove = (e) => {
+      this.target.x = e.clientX;
+      this.target.y = e.clientY;
+      this._ensureLoop();
+    };
     window.addEventListener('pointermove', this.onMove, { passive: true });
+  },
 
+  // Runs the dot/ring rAF loop only while the ring is still catching up to
+  // the pointer. Profiling showed this loop previously ran unconditionally
+  // forever (~60 style-recalculating writes/sec even with a motionless
+  // mouse) -- now it self-stops once converged and only restarts on the
+  // next real pointermove, so a stationary cursor costs nothing per frame.
+  _ensureLoop() {
+    if (this.looping) return;
+    this.looping = true;
     const loop = () => {
       if (this.dot) {
         this.dot.style.transform = `translate3d(${this.target.x}px, ${this.target.y}px, 0) translate(-50%,-50%)`;
       }
-      this.ringPos.x += (this.target.x - this.ringPos.x) * 0.18;
-      this.ringPos.y += (this.target.y - this.ringPos.y) * 0.18;
+      const dx = this.target.x - this.ringPos.x;
+      const dy = this.target.y - this.ringPos.y;
+      this.ringPos.x += dx * 0.18;
+      this.ringPos.y += dy * 0.18;
       if (this.ring) {
         this.ring.style.transform = `translate3d(${this.ringPos.x}px, ${this.ringPos.y}px, 0) translate(-50%,-50%)`;
+      }
+      if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) {
+        this.looping = false;
+        return;
       }
       this.raf = requestAnimationFrame(loop);
     };
@@ -476,6 +503,7 @@ const CustomCursor = {
   _unbind() {
     if (!this.bound) return;
     this.bound = false;
+    this.looping = false;
     window.removeEventListener('pointermove', this.onMove);
     if (this.raf) cancelAnimationFrame(this.raf);
   }
