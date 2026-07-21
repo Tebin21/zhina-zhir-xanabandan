@@ -570,6 +570,11 @@ main.site.is-revealed {
   width: 100%;
   padding-block: clamp(.5rem, 2vh, 1rem);
   margin-bottom: clamp(1.75rem, 5vh, 2.75rem);
+  /* Names scale off the header's own resolved width (cqi below), not the
+     raw viewport — the card's width caps out at 640px while vw-based sizing
+     keeps growing past that point, which is what let the names row outgrow
+     the card and get clipped by its overflow:hidden at in-between widths. */
+  container-type: inline-size;
 }
 .hero-card__header-glow {
   position: absolute;
@@ -601,17 +606,33 @@ main.site.is-revealed {
   opacity: .8;
 }
 
-/* --- Names row: one line, heart perfectly centered between them --- */
+/* --- Names row: one line, heart perfectly centered between them ---
+   flex-wrap is the hard guarantee against clipping/overflow: names+heart
+   scale down together (fluidly, in step with the header's real width) so
+   they fit on one line at virtually every size, and on the rare container
+   too narrow even at minimum sizes, the row reflows to a second line
+   instead of overflowing or getting clipped. Nothing here is ever
+   absolutely positioned, so nothing can crop or overlap. */
 .hero-names__row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1.25rem, 3.5vw, 2.75rem);
-  flex-wrap: nowrap;
+  align-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  row-gap: clamp(.3rem, 2vh, .75rem);
+  column-gap: clamp(1rem, 3.5vw, 2.75rem);
+}
+@supports (container-type: inline-size) {
+  .hero-names__row {
+    row-gap: clamp(.3rem, 2cqi, .75rem);
+    column-gap: clamp(.5rem, 7cqi, 2.5rem);
+  }
 }
 
 .hero-names__name {
   display: inline-block;
+  flex: 0 1 auto;
   font-family: "GreatVibes", "Brush Script MT", cursive;
   font-size: clamp(2.5rem, 1.5rem + 6vw, 5.5rem);
   line-height: 1.2;
@@ -636,9 +657,16 @@ main.site.is-revealed {
 }
 .hero-names__name--a { animation-delay: 1.2s, 1.2s; }
 .hero-names__name--b { animation-delay: 1.45s, 1.6s; }
+@supports (container-type: inline-size) {
+  /* Sized against the header's actual resolved width, so the name width
+     tracks the card's width exactly (including its 640px cap) instead of
+     drifting apart from it the way vw units do. */
+  .hero-names__name { font-size: clamp(1.85rem, 16.4cqi, 5.5rem); }
+}
 
 .hero-names__heart {
   display: inline-block;
+  flex: none;
   font-size: clamp(1.35rem, .8rem + 2.6vw, 2.35rem);
   line-height: 1;
   background: linear-gradient(160deg, #f8efd2, #c9a646 55%, #8a6a28);
@@ -654,6 +682,9 @@ main.site.is-revealed {
 }
 .hero-card.is-revealed .hero-names__heart {
   animation-play-state: running;
+}
+@supports (container-type: inline-size) {
+  .hero-names__heart { font-size: clamp(1.15rem, 7cqi, 2.35rem); }
 }
 
 /* Sweeps once, quickly, then holds — reads as "every few seconds", never a constant shine.
@@ -1296,7 +1327,7 @@ main.site.is-revealed {
 .venue-card__btn { margin-top: clamp(1.75rem, 4vw, 2.25rem); }
 
 /* ==========================================================================
-   Dress code — luxury minimal: three colors, two styles, one elegant card
+   Dress code — luxury minimal: three fabric-swatch cards, two style cards
    ========================================================================== */
 .dress-section { position: relative; }
 .dress-section__subtitle {
@@ -1306,7 +1337,7 @@ main.site.is-revealed {
   margin-top: -.75rem;
   margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
 }
-/* Warm golden light pooling behind the card, matching the maroon theme */
+/* Warm golden light pooling behind the section, matching the maroon theme */
 .dress-section__glow {
   position: absolute;
   inset: -8% 0;
@@ -1317,226 +1348,128 @@ main.site.is-revealed {
     radial-gradient(circle at 50% 78%, rgba(124,9,2,.16), transparent 60%);
   filter: blur(6px);
 }
-/* Faint rose blossoms tucked into the section's four corners — reuses the
-   shared #icon-rose asset, static and very low-opacity so it reads as
-   ambient warmth rather than decoration competing with the card */
-.dress-section__blooms {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-  will-change: transform;
-  contain: layout style paint;
-}
-.dress-section__bloom {
-  position: absolute;
-  width: clamp(46px, 9vw, 76px);
-  height: clamp(46px, 9vw, 76px);
-  opacity: .2;
-}
-.dress-section__bloom--tl { top: clamp(.25rem, 2vw, 1rem); inset-inline-start: clamp(0rem, 2vw, .75rem); transform: rotate(-8deg); }
-.dress-section__bloom--tr { top: clamp(.25rem, 2vw, 1rem); inset-inline-end: clamp(0rem, 2vw, .75rem); transform: scaleX(-1) rotate(-8deg); }
-.dress-section__bloom--bl { bottom: clamp(.25rem, 2vw, 1rem); inset-inline-start: clamp(0rem, 2vw, .75rem); transform: scaleY(-1) rotate(-8deg); }
-.dress-section__bloom--br { bottom: clamp(.25rem, 2vw, 1rem); inset-inline-end: clamp(0rem, 2vw, .75rem); transform: scale(-1, -1) rotate(-8deg); }
 
-.dress-card {
-  position: relative;
-  overflow: hidden;
-  max-width: 600px;
-  margin-inline: auto;
-  padding: clamp(2.25rem, 6vw, 3.5rem) clamp(1.5rem, 6vw, 2.75rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(1.75rem, 5vw, 2.5rem);
-  border-color: rgba(212,185,106,.55);
-  box-shadow: var(--shadow-elevated), 0 0 50px rgba(201,166,70,.14), inset 0 1px 0 rgba(255,255,255,.14);
-  will-change: transform;
-  contain: layout style;
-}
-.dress-card__section { width: 100%; }
-.dress-card__kicker {
+.dress-kicker {
   font-size: .8rem;
   letter-spacing: .14em;
   color: var(--gold-400);
   opacity: .85;
   margin-bottom: clamp(1.1rem, 3vw, 1.6rem);
 }
-/* Slim jewel-centered divider between the color and style groups */
-.dress-card__divider {
-  position: relative;
-  width: min(120px, 55%);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
-}
-.dress-card__divider::before {
-  content: "";
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 6px; height: 6px;
-  transform: translate(-50%, -50%) rotate(45deg);
-  background: var(--gold-400);
-  box-shadow: 0 0 8px rgba(201,166,70,.6);
-}
 
-/* Ornamental corner flourishes, mirrored from a single icon */
-.dress-card__corner {
-  position: absolute;
-  width: clamp(26px, 6vw, 38px);
-  height: clamp(26px, 6vw, 38px);
-  color: var(--gold-400);
-  opacity: .5;
-  pointer-events: none;
-}
-.dress-card__corner svg { width: 100%; height: 100%; }
-.dress-card__corner--tl { top: clamp(.7rem, 2vw, 1.15rem); inset-inline-start: clamp(.7rem, 2vw, 1.15rem); }
-.dress-card__corner--tr { top: clamp(.7rem, 2vw, 1.15rem); inset-inline-end: clamp(.7rem, 2vw, 1.15rem); transform: scaleX(-1); }
-.dress-card__corner--bl { bottom: clamp(.7rem, 2vw, 1.15rem); inset-inline-start: clamp(.7rem, 2vw, 1.15rem); transform: scaleY(-1); }
-.dress-card__corner--br { bottom: clamp(.7rem, 2vw, 1.15rem); inset-inline-end: clamp(.7rem, 2vw, 1.15rem); transform: scale(-1, -1); }
-
-/* --- Three recommended colors, presented as authentic folded-fabric ribbon
-   badges: fishtail-cut gold-trimmed banners, not pill/capsule tags --- */
-.ribbon-trio {
+/* --- Three recommended colors, as minimal luxury glass cards. Each card
+   holds nothing but a fabric swatch and its name — the swatch is the
+   entire visual focus, no ribbons/seals/badges competing with it. --- */
+.color-swatches {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items: flex-start;
-  gap: clamp(.5rem, 2vw, 1rem);
-  width: 100%;
+  align-items: stretch;
+  gap: clamp(.5rem, 2.5vw, 1.75rem);
+  max-width: 46rem;
+  margin-inline: auto;
+  margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
 }
-.ribbon-trio__item { flex: 0 0 auto; }
-.ribbon-trio__item[data-reveal]:nth-child(1) { transition-delay: 0ms; }
-.ribbon-trio__item[data-reveal]:nth-child(2) { transition-delay: 110ms; }
-.ribbon-trio__item[data-reveal]:nth-child(3) { transition-delay: 220ms; }
+/* Equal-width, always three-in-a-row: basis 0 + min-width:0 lets every card
+   shrink together in lockstep as the viewport narrows, instead of hitting
+   each card's content-driven minimum width and forcing a wrap/overflow. */
+.color-swatches__item { flex: 1 1 0; min-width: 0; max-width: 220px; }
+.color-swatches__item[data-reveal]:nth-child(1) { transition-delay: 0ms; }
+.color-swatches__item[data-reveal]:nth-child(2) { transition-delay: 110ms; }
+.color-swatches__item[data-reveal]:nth-child(3) { transition-delay: 220ms; }
 
-/* The ribbon itself: fixed-size stage for the fold slivers + gold-trimmed body */
-.luxury-ribbon {
+.color-card {
   position: relative;
-  isolation: isolate;
-  display: block;
-  width: clamp(136px, 26vw, 160px);
-  height: clamp(60px, 12vw, 68px);
-  will-change: transform;
-  contain: layout style;
-  transition: transform var(--dur-medium) var(--ease-luxury);
-}
-
-/* Dark fold-back slivers peeking past each notch — the shaded underside of the
-   fabric where it turns and is pinned, giving the cut ends real depth. */
-.luxury-ribbon::before,
-.luxury-ribbon::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  z-index: 0;
-  width: clamp(10px, 2.4vw, 14px);
-  height: 58%;
-  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
-  background: linear-gradient(180deg, var(--maroon-900) 0%, #200200 100%);
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,.45));
-}
-.luxury-ribbon::before { inset-inline-start: -2px; transform: translateY(calc(-50% + 3px)); }
-.luxury-ribbon::after   { inset-inline-end: -2px;   transform: translateY(calc(-50% + 3px)) scaleX(-1); }
-
-/* Outer gold layer: the fishtail silhouette, brushed-metal sheen + soft cast shadow */
-.luxury-ribbon__body {
-  position: relative;
-  z-index: 1;
+  overflow: hidden;
+  height: 100%;
+  min-width: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(.5rem, 2vw, .75rem);
-  width: 100%;
-  height: 100%;
-  padding-inline: clamp(1.1rem, 4vw, 1.4rem);
-  clip-path: polygon(0% 0%, 100% 0%, 88% 50%, 100% 100%, 0% 100%, 12% 50%);
-  background:
-    repeating-linear-gradient(115deg, rgba(255,255,255,.35) 0 1px, transparent 1px 3px),
-    linear-gradient(120deg, #8a6a1f 0%, var(--gold-500) 22%, var(--gold-200) 46%, #fffaf0 50%, var(--gold-300) 58%, var(--gold-500) 78%, #6b4f18 100%);
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,.35)) drop-shadow(0 0 18px rgba(201,166,70,.22));
+  gap: clamp(.6rem, 3vw, 1.5rem);
+  padding: clamp(1.1rem, 6vw, 2.75rem) clamp(.6rem, 4vw, 1.75rem);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-elevated), inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 30px rgba(230,197,120,.06);
+  will-change: transform;
+  contain: layout style;
+  transition: transform var(--dur-medium) var(--ease-luxury),
+              box-shadow var(--dur-medium) var(--ease-luxury),
+              border-color var(--dur-medium) var(--ease-luxury);
 }
-/* Inner maroon face, inset from the gold edge — a woven, shaded fabric fill */
-.luxury-ribbon__body::before {
+@supports not (backdrop-filter: blur(1px)) {
+  .color-card { background: rgba(40,6,4,.82); }
+}
+/* Very subtle diagonal shimmer drifting across the glass, on a slow loop */
+.color-card::after {
   content: "";
   position: absolute;
+  inset: -40%;
   z-index: 0;
-  inset: clamp(2.5px, .6vw, 3px);
-  clip-path: polygon(0% 0%, 100% 0%, 88% 50%, 100% 100%, 0% 100%, 12% 50%);
-  background:
-    repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 1px, transparent 1px 4px),
-    repeating-linear-gradient(45deg,  rgba(0,0,0,.05)   0 1px, transparent 1px 4px),
-    radial-gradient(120% 140% at 30% 0%,   rgba(255,255,255,.16), transparent 55%),
-    radial-gradient(100% 120% at 80% 100%, rgba(0,0,0,.28),       transparent 60%),
-    linear-gradient(155deg, var(--maroon-500) 0%, var(--maroon-700) 45%, var(--maroon-900) 100%);
+  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.06) 50%, transparent 58%);
+  animation: color-card-shimmer 7s ease-in-out infinite;
+  pointer-events: none;
 }
-.luxury-ribbon__body > * { position: relative; z-index: 1; }
-
-/* Small premium fabric swatch: soft rounded-square chip with a subtle woven sheen */
-.luxury-ribbon__swatch {
-  display: block;
-  flex: none;
-  width: clamp(22px, 4.5vw, 26px);
-  height: clamp(22px, 4.5vw, 26px);
-  border-radius: clamp(5px, 1vw, 7px);
-  background:
-    repeating-linear-gradient(135deg, rgba(255,255,255,.14) 0 1px, transparent 1px 3px),
-    radial-gradient(circle at 30% 24%, rgba(255,255,255,.5), rgba(255,255,255,0) 50%),
-    var(--swatch-color);
-  border: 1px solid rgba(255,255,255,.35);
-  box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.25);
-  transition: transform var(--dur-medium) var(--ease-luxury);
+@keyframes color-card-shimmer {
+  0%, 100% { transform: translateX(-25%); }
+  50% { transform: translateX(25%); }
 }
-
-.luxury-ribbon__label { font-size: clamp(.78rem, 2.4vw, .88rem); color: var(--gold-200); opacity: .95; white-space: nowrap; }
-
-/* Gold wax-seal "recommended" medallion, pinned tilted over the ribbon's top edge */
-.luxury-ribbon__seal {
-  position: absolute;
-  top: clamp(-18px, -4vw, -14px);
-  inset-inline-start: 50%;
-  z-index: 2;
-  width: clamp(30px, 7vw, 36px);
-  height: clamp(30px, 7vw, 36px);
-  transform: translateX(-50%) rotate(-6deg);
-  border-radius: 48% 52% 51% 49% / 52% 48% 53% 47%;
-  background:
-    radial-gradient(circle at 32% 26%, var(--gold-200), var(--gold-500) 55%, #6b4f18 100%),
-    radial-gradient(circle at 70% 78%, rgba(0,0,0,.35), transparent 60%);
-  box-shadow:
-    0 0 0 1px rgba(255,253,249,.55),
-    0 0 0 3px rgba(58,5,1,.4),
-    0 3px 8px rgba(0,0,0,.45),
-    0 0 14px rgba(201,166,70,.5);
-  transition: transform var(--dur-medium) var(--ease-luxury);
-}
-/* Rose impression stamped into the wax — reuses #icon-rose, recolored dark */
-.luxury-ribbon__seal-mark {
-  position: absolute;
-  inset: 22%;
-  filter: drop-shadow(0 1px 0 rgba(255,255,255,.25));
-}
-.luxury-ribbon__seal-mark .rose__petal,
-.luxury-ribbon__seal-mark .rose__bud {
-  fill: rgba(58,5,1,.55);
-  stroke: none;
-  opacity: 1;
-}
-
 @media (hover: hover) and (pointer: fine) {
-  .luxury-ribbon:hover { transform: translateY(-4px); }
-  .luxury-ribbon:hover .luxury-ribbon__body {
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,.4)) drop-shadow(0 0 24px rgba(201,166,70,.34));
+  .color-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold-400);
+    box-shadow: var(--shadow-gold-glow), var(--shadow-elevated);
   }
-  .luxury-ribbon:hover .luxury-ribbon__seal { transform: translateX(-50%) rotate(-6deg) scale(1.06); }
-  .luxury-ribbon:hover .luxury-ribbon__swatch { transform: scale(1.08); }
 }
 
-/* Below ~480px, keep every ribbon full-size and legible by stacking them in a
-   centered column instead of shrinking three onto one cramped row. */
-@media (max-width: 480px) {
-  .ribbon-trio { flex-direction: column; align-items: center; gap: clamp(1.75rem, 7vw, 2.25rem); }
-  .luxury-ribbon { width: min(260px, 78vw); height: clamp(64px, 17vw, 72px); }
+/* Premium satin/velvet fabric swatch — soft top-left highlight, diagonal
+   sheen and a fine woven texture, deepening toward the lower edge */
+.color-card__fabric {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: clamp(44px, 15vw, 92px);
+  height: clamp(44px, 15vw, 92px);
+  border-radius: 20px;
+  background:
+    radial-gradient(ellipse at 30% 22%, rgba(255,255,255,.55), transparent 45%),
+    linear-gradient(135deg, rgba(255,255,255,.16) 0%, transparent 32%, transparent 68%, rgba(0,0,0,.28) 100%),
+    repeating-linear-gradient(112deg, rgba(255,255,255,.05) 0px, rgba(255,255,255,.05) 1.5px, transparent 1.5px, transparent 3.5px),
+    var(--fabric-color);
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.35),
+    inset 0 -10px 18px rgba(0,0,0,.35),
+    0 10px 22px rgba(0,0,0,.4);
+  transition: transform var(--dur-medium) var(--ease-luxury);
+}
+@media (hover: hover) and (pointer: fine) {
+  .color-card:hover .color-card__fabric { transform: scale(1.04); }
+}
+
+.color-card__name {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(.72rem, 2.4vw, 1.1rem);
+  color: var(--gold-200);
+  opacity: .95;
+  /* Wraps onto a second line rather than being clipped by the card's
+     overflow:hidden if a narrow screen ever leaves too little room for it
+     to fit on one — the three cards must stay in a single row at every
+     width, never stack, so the name is what gives here, not the layout. */
+  white-space: normal;
+  max-width: 100%;
+  text-align: center;
+}
+
+/* --- Dress style duo lives in its own small glass card below the colors --- */
+.style-card {
+  max-width: 460px;
+  margin-inline: auto;
+  padding: clamp(1.75rem, 5vw, 2.5rem) clamp(1.25rem, 5vw, 2rem);
 }
 
 /* --- Two dress-style cards: fixed side-by-side row, equal width/height --- */
@@ -1546,8 +1479,6 @@ main.site.is-revealed {
   align-items: stretch;
   gap: clamp(.75rem, 3.5vw, 1.5rem);
   flex-wrap: nowrap;
-  max-width: 460px;
-  margin-inline: auto;
 }
 .style-duo__card {
   flex: 1 1 0;
