@@ -107,44 +107,26 @@
     </defs>
   </svg>
 
-  <!-- Loader: waits for font + hero image + video + min splash time.
-       Cinematic splash — luxury glow, drifting gold particles/petals, the
-       couple's names in script type, and a slow gold ring holding their
-       initials. Purely decorative; screen readers get the sr-only status line. -->
-  <div id="loader" class="loader" role="status" aria-live="polite">
-    <div class="loader__particles" aria-hidden="true">
-      <span class="loader__particle loader__particle--1"></span>
-      <span class="loader__particle loader__particle--2 loader__particle--petal"></span>
-      <span class="loader__particle loader__particle--3"></span>
-      <span class="loader__particle loader__particle--4 loader__particle--petal"></span>
-      <span class="loader__particle loader__particle--5"></span>
-      <span class="loader__particle loader__particle--6 loader__particle--petal"></span>
-      <span class="loader__particle loader__particle--7"></span>
-    </div>
-
-    <div class="loader__stage" aria-hidden="true">
-      <div class="loader__names">
-        <span class="loader__name loader__name--a">Zhina</span>
-        <span class="loader__heart">♡</span>
-        <span class="loader__name loader__name--b">Zhir</span>
-      </div>
-
-      <div class="loader__mark">
-        <svg class="loader__mark-svg" viewBox="0 0 100 100"><circle class="loader__ring-bg" cx="50" cy="50" r="42"/><circle class="loader__ring" cx="50" cy="50" r="42"/></svg>
-        <span class="loader__mark-letters">
-          <span class="loader__mark-letter">Z</span>
-          <span class="loader__mark-heart">♡</span>
-          <span class="loader__mark-letter">Z</span>
-        </span>
-      </div>
-    </div>
-
-    <span class="sr-only">چاوەڕوانبە، بانگهێشتنامەکە ئامادە دەکرێت…</span>
-  </div>
-
-  <!-- Video gate: single tap starts the ~5s intro clip, no skip, no controls -->
-  <div id="video-gate" class="video-gate" inert>
+  <!-- Video gate: the intro clip is visible immediately (poster frame) as a
+       cinematic backdrop. A premium loading overlay sits above it while
+       font/image/video/music truly finish preloading (real byte progress,
+       no faked percentage), then fades out to reveal the tap-to-play
+       button. Single tap starts the ~5s intro clip, no skip, no controls. -->
+  <div id="video-gate" class="video-gate">
     <video id="intro-video" class="video-gate__video" playsinline muted disableremoteplayback aria-hidden="true" tabindex="-1" poster="assets/images/vivi-poster.jpg"></video>
+
+    <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite">
+      <div class="loading-overlay__ring-wrap">
+        <svg class="loading-overlay__ring-svg" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="loading-overlay__ring-bg" cx="50" cy="50" r="44"/>
+          <circle id="loading-overlay__ring" class="loading-overlay__ring" cx="50" cy="50" r="44"/>
+        </svg>
+        <span class="loading-overlay__percent" id="loading-overlay__percent" aria-hidden="true">0%</span>
+      </div>
+      <p class="loading-overlay__text" lang="ckb">چاوەڕوان بن بۆ کردنەوەی بانگێشتنامەکە...</p>
+      <span class="sr-only">چاوەڕوانبە، بانگهێشتنامەکە ئامادە دەکرێت…</span>
+    </div>
+
     <button id="video-gate__play" type="button" class="video-gate__play" aria-label="دەستپێکردنی ڤیدیۆی بانگهێشت">
       <svg class="video-gate__play-icon" aria-hidden="true"><use href="#icon-play"/></svg>
     </button>
@@ -172,7 +154,7 @@
           src="assets/images/zhina-720.jpg"
           srcset="assets/images/zhina-360.jpg 360w, assets/images/zhina-540.jpg 540w, assets/images/zhina-720.jpg 720w, assets/images/zhina-1080.jpg 1080w"
           sizes="100vw"
-          data-reveal data-reveal-type="scale">
+          data-reveal data-reveal-type="fade">
       </picture>
     </section>
 
@@ -311,26 +293,41 @@
 
         <div class="dress-card__section">
           <p class="dress-card__kicker">ڕەنگی پێشنیارکراو</p>
-          <ul class="color-trio">
-            <li class="color-trio__item" data-reveal>
-              <span class="color-ribbon">
-                <span class="color-ribbon__badge" title="ڕەنگی پێشنیارکراو"><span class="sr-only">ڕەنگی پێشنیارکراو</span></span>
-                <span class="color-ribbon__swatch" style="--swatch-color:#5C0A1E" aria-hidden="true"></span>
-                <span class="color-ribbon__label">شەرابی تۆخ</span>
+          <ul class="ribbon-trio">
+            <li class="ribbon-trio__item" data-reveal>
+              <span class="luxury-ribbon">
+                <span class="luxury-ribbon__body">
+                  <span class="luxury-ribbon__swatch" style="--swatch-color:#5C0A1E" aria-hidden="true"></span>
+                  <span class="luxury-ribbon__label">شەرابی تۆخ</span>
+                </span>
+                <span class="luxury-ribbon__seal" title="ڕەنگی پێشنیارکراو">
+                  <span class="sr-only">ڕەنگی پێشنیارکراو</span>
+                  <svg class="luxury-ribbon__seal-mark" aria-hidden="true" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+                </span>
               </span>
             </li>
-            <li class="color-trio__item" data-reveal>
-              <span class="color-ribbon">
-                <span class="color-ribbon__badge" title="ڕەنگی پێشنیارکراو"><span class="sr-only">ڕەنگی پێشنیارکراو</span></span>
-                <span class="color-ribbon__swatch" style="--swatch-color:#0B6B4F" aria-hidden="true"></span>
-                <span class="color-ribbon__label">سەوزی زمرد</span>
+            <li class="ribbon-trio__item" data-reveal>
+              <span class="luxury-ribbon">
+                <span class="luxury-ribbon__body">
+                  <span class="luxury-ribbon__swatch" style="--swatch-color:#0B6B4F" aria-hidden="true"></span>
+                  <span class="luxury-ribbon__label">سەوزی زمرد</span>
+                </span>
+                <span class="luxury-ribbon__seal" title="ڕەنگی پێشنیارکراو">
+                  <span class="sr-only">ڕەنگی پێشنیارکراو</span>
+                  <svg class="luxury-ribbon__seal-mark" aria-hidden="true" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+                </span>
               </span>
             </li>
-            <li class="color-trio__item" data-reveal>
-              <span class="color-ribbon">
-                <span class="color-ribbon__badge" title="ڕەنگی پێشنیارکراو"><span class="sr-only">ڕەنگی پێشنیارکراو</span></span>
-                <span class="color-ribbon__swatch" style="--swatch-color:#16213E" aria-hidden="true"></span>
-                <span class="color-ribbon__label">شینی تۆخ</span>
+            <li class="ribbon-trio__item" data-reveal>
+              <span class="luxury-ribbon">
+                <span class="luxury-ribbon__body">
+                  <span class="luxury-ribbon__swatch" style="--swatch-color:#16213E" aria-hidden="true"></span>
+                  <span class="luxury-ribbon__label">شینی تۆخ</span>
+                </span>
+                <span class="luxury-ribbon__seal" title="ڕەنگی پێشنیارکراو">
+                  <span class="sr-only">ڕەنگی پێشنیارکراو</span>
+                  <svg class="luxury-ribbon__seal-mark" aria-hidden="true" viewBox="0 0 100 100"><use href="#icon-rose"/></svg>
+                </span>
               </span>
             </li>
           </ul>
@@ -439,7 +436,7 @@
       </button>
     </section>
 
-    <div class="ending-message" id="ending-message" aria-live="polite">
+    <div class="ending-message" id="ending-message" aria-live="polite" aria-hidden="true">
       <div class="ending-message__panel">
         <p class="ending-message__text" dir="rtl" lang="ckb">زۆر خۆشحاڵ بووین بە ئامادەبوونت 💛</p>
       </div>
@@ -475,7 +472,7 @@
     <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false" aria-label="لێدانی مۆسیقا">
       <svg class="music-toggle__icon" aria-hidden="true"><use href="#icon-play"/></svg>
     </button>
-    <audio id="bg-music" src="assets/audio/music.mp3" preload="auto" loop></audio>
+    <audio id="bg-music" preload="auto" loop></audio>
   </main>
 
   <div id="cursor-dot" aria-hidden="true"></div>

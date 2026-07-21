@@ -24,20 +24,96 @@ const ReducedMotionGuard = {
   }
 };
 
-/* --- Asset gate: resolves once font, hero image and video are truly ready --- */
+/* --- Progress UI: drives the loading-overlay ring + percentage text.
+   Smooths every incoming target (real byte progress, never invented) toward
+   its displayed value via rAF, so bursty network chunks still read as a
+   fluid sweep instead of stepping visibly. --- */
+const ProgressUI = {
+  RADIUS: 44,
+  TAU: 140, // ms time-constant for the exponential ease — convergence speed
+            // stays consistent regardless of the browser's actual frame rate.
+
+  target: 0,
+  shown: 0,
+  raf: null,
+  lastTime: 0,
+  running: false,
+
+  init() {
+    this.ring = document.getElementById('loading-overlay__ring');
+    this.percentEl = document.getElementById('loading-overlay__percent');
+    this.circumference = 2 * Math.PI * this.RADIUS;
+    if (this.ring) {
+      this.ring.style.strokeDasharray = String(this.circumference);
+      this.ring.style.strokeDashoffset = String(this.circumference);
+    }
+    this.running = true;
+    this.lastTime = performance.now();
+    this.raf = requestAnimationFrame((t) => this._tick(t));
+  },
+
+  setTarget(percent) {
+    // Progress only ever moves forward — several assets report concurrently
+    // and their combined weighted total can jitter slightly between ticks.
+    this.target = Math.max(this.target, Math.min(100, percent));
+  },
+
+  finish() {
+    this.target = 100;
+  },
+
+  _tick(now) {
+    if (!this.running) return;
+    const dt = now - this.lastTime;
+    this.lastTime = now;
+    const alpha = 1 - Math.exp(-dt / this.TAU);
+    this.shown += (this.target - this.shown) * alpha;
+    if (Math.abs(this.target - this.shown) < 0.05) this.shown = this.target;
+    const rounded = Math.round(this.shown);
+    if (this.percentEl) this.percentEl.textContent = rounded + '%';
+    if (this.ring) {
+      this.ring.style.strokeDashoffset = String(this.circumference * (1 - this.shown / 100));
+    }
+    // Self-terminate once fully converged on the final 100% — nothing left
+    // to animate, so no external timer is needed (or can prematurely cut
+    // the sweep short on a slow/throttled frame rate).
+    if (this.shown >= this.target && this.target >= 100) {
+      this.running = false;
+      return;
+    }
+    this.raf = requestAnimationFrame((t) => this._tick(t));
+  }
+};
+
+/* --- Asset gate: resolves once font, hero image, intro video and background
+   music are all truly loaded. Video/audio progress is tracked from actual
+   bytes received over the network (never a fake timer), weighted by their
+   typical relative size so the combined percentage feels proportional. --- */
 const AssetGate = {
-  async whenReady() {
+  WEIGHTS: { font: 0.05, image: 0.10, video: 0.55, audio: 0.30 },
+  progress: { font: 0, image: 0, video: 0, audio: 0 },
+
+  async whenReady(onProgress) {
+    this.onProgress = onProgress || (() => {});
     const ready = Promise.all([
       this._fontReady(),
       this._imageReady(),
       this._videoReady(),
-      delay(1200) // minimum splash time so the loader never flashes on repeat visits
+      this._audioReady()
     ]);
-    // 8s failsafe: never permanently strand a visitor on the loader over one broken asset.
+    // Failsafe: never permanently strand a visitor over one broken/stalled asset.
     await Promise.race([
       ready,
-      delay(8000).then(() => console.warn('AssetGate: 8s failsafe reached, revealing anyway'))
+      delay(20000).then(() => console.warn('AssetGate: 20s failsafe reached, revealing anyway'))
     ]);
+  },
+
+  _report(key, value) {
+    this.progress[key] = value;
+    const total = Object.keys(this.WEIGHTS).reduce(
+      (sum, k) => sum + this.WEIGHTS[k] * this.progress[k], 0
+    );
+    this.onProgress(total * 100);
   },
 
   async _fontReady() {
@@ -47,11 +123,12 @@ const AssetGate = {
     } catch (e) {
       /* Font Loading API unsupported/failed — proceed, @font-face swap still applies. */
     }
+    this._report('font', 1);
   },
 
   async _imageReady() {
     const img = document.getElementById('invitation-image');
-    if (!img) return;
+    if (!img) { this._report('image', 1); return; }
     try {
       if (img.decode) {
         await img.decode();
@@ -64,18 +141,41 @@ const AssetGate = {
     } catch (e) {
       /* decode() can reject in rare cases — non-fatal, image still renders. */
     }
+    this._report('image', 1);
+  },
+
+  // Streams the response body, reporting real received-bytes / total-bytes
+  // progress on every chunk. Falls back to an indeterminate 0->1 jump only
+  // when Content-Length isn't available (progress still reflects reality —
+  // it just can't be granular without a known total).
+  async _fetchWithProgress(url, key) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(url + ' fetch failed: ' + response.status);
+    const total = Number(response.headers.get('content-length')) || 0;
+    if (!response.body || !total) {
+      const blob = await response.blob();
+      this._report(key, 1);
+      return blob;
+    }
+    const reader = response.body.getReader();
+    const chunks = [];
+    let received = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.length;
+      this._report(key, Math.min(1, received / total));
+    }
+    this._report(key, 1);
+    return new Blob(chunks);
   },
 
   async _videoReady() {
     const video = document.getElementById('intro-video');
-    if (!video) return;
+    if (!video) { this._report('video', 1); return; }
     try {
-      // Primary path: byte-complete fetch guarantees the clip is *fully* loaded,
-      // not just "probably playable" (canplaythrough is a heuristic and inconsistent
-      // cross-browser).
-      const response = await fetch('assets/videos/vivi.mp4');
-      if (!response.ok) throw new Error('video fetch failed: ' + response.status);
-      const blob = await response.blob();
+      const blob = await this._fetchWithProgress('assets/videos/vivi.mp4', 'video');
       const url = URL.createObjectURL(blob);
       video.dataset.blobUrl = url;
       video.src = url;
@@ -91,6 +191,29 @@ const AssetGate = {
         video.addEventListener('loadeddata', resolve, { once: true });
         video.addEventListener('error', resolve, { once: true });
       });
+      this._report('video', 1);
+    }
+  },
+
+  async _audioReady() {
+    const audio = document.getElementById('bg-music');
+    if (!audio) { this._report('audio', 1); return; }
+    try {
+      const blob = await this._fetchWithProgress('assets/audio/music.mp3', 'audio');
+      const url = URL.createObjectURL(blob);
+      audio.dataset.blobUrl = url;
+      audio.src = url;
+      await new Promise((resolve, reject) => {
+        audio.addEventListener('loadedmetadata', resolve, { once: true });
+        audio.addEventListener('error', reject, { once: true });
+      });
+    } catch (e) {
+      audio.src = 'assets/audio/music.mp3';
+      await new Promise((resolve) => {
+        audio.addEventListener('loadeddata', resolve, { once: true });
+        audio.addEventListener('error', resolve, { once: true });
+      });
+      this._report('audio', 1);
     }
   }
 };
@@ -223,21 +346,29 @@ const CountdownEngine = {
         if (digits[i].textContent === ch) return;
         digits[i].textContent = ch;
         digits[i].classList.remove('is-flipping');
-        void digits[i].offsetWidth; // reflow, so re-adding the class restarts the animation
-        digits[i].classList.add('is-flipping');
+        // Double-rAF re-add instead of forcing a synchronous layout flush
+        // (void offsetWidth): the first rAF waits for the "removed" state to
+        // actually render, the second re-adds the class on the frame after,
+        // so the keyframes reliably restart without ever blocking the main
+        // thread on a synchronous style/layout read.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => digits[i].classList.add('is-flipping'));
+        });
       });
     };
 
     // Fires the shared golden pulse (quote card glow + border shimmer + tile
     // illumination) once per tick, in lockstep with the seconds changing —
-    // same remove/reflow/re-add trick as the digit flip, so the CSS keyframes
-    // restart cleanly on every call instead of only running once.
+    // same double-rAF remove/re-add trick as the digit flip, so the CSS
+    // keyframes restart cleanly on every call instead of only running once,
+    // with no forced reflow.
     const unit = document.querySelector('.countdown-unit');
     const pulseUnit = () => {
       if (!unit) return;
       unit.classList.remove('is-pulsing');
-      void unit.offsetWidth;
-      unit.classList.add('is-pulsing');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => unit.classList.add('is-pulsing'));
+      });
     };
 
     const tick = () => {
@@ -326,7 +457,7 @@ const CustomCursor = {
     this.dot = document.getElementById('cursor-dot');
     this.ring = document.getElementById('cursor-ring');
     this.onMove = (e) => { this.target.x = e.clientX; this.target.y = e.clientY; };
-    window.addEventListener('pointermove', this.onMove);
+    window.addEventListener('pointermove', this.onMove, { passive: true });
 
     const loop = () => {
       if (this.dot) {
@@ -464,8 +595,15 @@ const EndingCelebration = {
   },
 
   showMessage() {
+    // Panel already exists pre-built (see .ending-message in style.css) with its
+    // backdrop-filter layer pre-warmed — this only flips opacity, so the glass,
+    // border, glow and text all composite together in the same frame.
+    this.message.setAttribute('aria-hidden', 'false');
     this.message.classList.add('is-visible');
-    setTimeout(() => this.message.classList.remove('is-visible'), this.DURATION_MS);
+    setTimeout(() => {
+      this.message.classList.remove('is-visible');
+      this.message.setAttribute('aria-hidden', 'true');
+    }, this.DURATION_MS);
   },
 
   runFall() {
@@ -539,10 +677,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   VideoGateController.init(() => RevealAndPetalBurst.run());
 
-  AssetGate.whenReady().then(() => {
-    const loader = document.getElementById('loader');
+  ProgressUI.init();
+  AssetGate.whenReady((percent) => ProgressUI.setTarget(percent)).then(() => {
+    ProgressUI.finish();
+    const overlay = document.getElementById('loading-overlay');
     const videoGate = document.getElementById('video-gate');
-    if (loader) loader.classList.add('is-hidden');
-    if (videoGate) videoGate.removeAttribute('inert');
+    if (overlay) overlay.classList.add('is-hidden');
+    if (videoGate) videoGate.classList.add('is-ready');
   });
 });
