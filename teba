@@ -1,0 +1,4 @@
+git add .
+git commit -m "lakman charasr krd "
+git push origin main 
+git status

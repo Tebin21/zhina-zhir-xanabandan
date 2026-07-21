@@ -420,6 +420,12 @@ main.site.is-revealed {
   opacity: 0;
   transform: translateY(28px) scale(.98);
   transition: opacity var(--dur-reveal) var(--ease-luxury), transform var(--dur-reveal) var(--ease-luxury);
+  /* No standing will-change here on purpose: most [data-reveal] nodes sit
+     well below the fold at load time, so arming them all in advance would
+     hold a composited layer per off-screen section for as long as it takes
+     the visitor to scroll there — more standing layers than doing nothing.
+     Each entrance only ever fires once, so the browser's own just-in-time
+     layer promotion when the transition starts is the cheaper trade-off. */
 }
 [data-reveal].is-revealed {
   opacity: 1;
@@ -432,6 +438,18 @@ main.site.is-revealed {
    size at all times; only opacity changes on entrance. */
 [data-reveal][data-reveal-type="fade"] { transform: none; }
 [data-reveal][data-reveal-type="fade"].is-revealed { transform: none; }
+
+/* Hover-lift cards (.glass-card, .venue-card, .color-card, .timeline-card,
+   .style-duo__card) only need a standing compositor layer on devices that
+   can actually hover — on touch, this transform never triggers, so keeping
+   the permanent layer there is pure waste. Gating it here (rather than
+   removing it outright) leaves desktop hover exactly as responsive as
+   before while touch devices never pay for it. */
+@media (hover: hover) and (pointer: fine) {
+  .glass-card, .venue-card, .color-card, .timeline-card, .style-duo__card {
+    will-change: transform;
+  }
+}
 
 /* ==========================================================================
    Invitation card (first section — the supplied zhina.jpg, used as-is)
@@ -517,10 +535,10 @@ main.site.is-revealed {
     0 0 70px rgba(201,166,70,.10),
     0 30px 80px rgba(0,0,0,.45);
 
-  /* Own compositor layer: the heavy backdrop blur is cached as a texture and
-     just translated during scroll instead of being re-sampled every frame. */
-  will-change: transform;
-  contain: layout style;
+  /* Layer promotion for the entrance transition itself comes from the
+     shared [data-reveal] rule (will-change: opacity, transform, released
+     via .is-revealed once settled) — no separate permanent hint needed here. */
+  contain: layout style paint;
 
   opacity: 0;
   transform: translateY(30px) scale(.98);
@@ -594,9 +612,6 @@ main.site.is-revealed {
   filter: sepia(1) saturate(2.2) hue-rotate(-8deg) brightness(1.25) drop-shadow(0 0 10px rgba(230,197,120,.25));
   transform: translateY(-50%);
   pointer-events: none;
-  /* Static 5-filter chain is expensive to rasterize — cache it on its own
-     layer so scrolling only ever translates the cached result. */
-  will-change: transform;
 }
 .hero-card__bloom--l { inset-inline-start: clamp(-1.25rem, -1vw, .5rem); transform: translateY(-50%) rotate(-12deg); }
 .hero-card__bloom--r { inset-inline-end: clamp(-1.25rem, -1vw, .5rem); transform: translateY(-50%) scaleX(-1) rotate(-12deg); }
@@ -794,9 +809,6 @@ main.site.is-revealed {
   filter: drop-shadow(0 0 6px rgba(201, 166, 70, .35));
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
           mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
-  /* Static drop-shadow + mask, cached as its own layer instead of being
-     re-rasterized on every scroll frame. */
-  will-change: transform;
 }
 .ornate-divider__line {
   fill: none;
@@ -853,12 +865,9 @@ main.site.is-revealed {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-elevated), inset 0 1px 0 rgba(255,255,255,.12);
-  /* Promote to its own compositor layer so the expensive backdrop blur is
-     rasterized once and merely translated while scrolling, instead of being
-     re-sampled every frame. */
-  will-change: transform;
-  contain: layout style;
-  transition: transform var(--dur-medium) var(--ease-luxury),
+  contain: layout style paint;
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury),
               border-color var(--dur-medium) var(--ease-luxury);
 }
@@ -927,7 +936,8 @@ main.site.is-revealed {
   border-radius: clamp(20px, 3.6vw, 30px);
   box-shadow: var(--shadow-elevated), inset 0 1px 0 rgba(255,255,255,.10);
 
-  transition: transform var(--dur-medium) var(--ease-luxury),
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury),
               border-color var(--dur-medium) var(--ease-luxury);
 }
@@ -1032,9 +1042,10 @@ main.site.is-revealed {
     0 20px 55px rgba(0,0,0,.38),
     0 0 30px rgba(201,166,70,.20);
 
-  will-change: transform;
-  contain: layout style;
-  transition: border-color var(--dur-medium) var(--ease-luxury),
+  contain: layout style paint;
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-reveal) var(--ease-luxury),
+              border-color var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury);
 }
 @supports not (backdrop-filter: blur(1px)) {
@@ -1204,9 +1215,9 @@ main.site.is-revealed {
   border: 1px solid rgba(212,185,106,.5);
   border-radius: clamp(24px, 4vw, 32px);
   box-shadow: var(--shadow-elevated), 0 0 50px rgba(201,166,70,.14), inset 0 1px 0 rgba(255,255,255,.14);
-  will-change: transform;
-  contain: layout style;
-  transition: transform var(--dur-medium) var(--ease-luxury),
+  contain: layout style paint;
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury),
               border-color var(--dur-medium) var(--ease-luxury);
 }
@@ -1240,8 +1251,6 @@ main.site.is-revealed {
   pointer-events: none;
   overflow: hidden;
   border-radius: inherit;
-  /* One layer for all four blooms rather than promoting each individually. */
-  will-change: transform;
   contain: layout style paint;
 }
 .venue-card__bloom {
@@ -1395,9 +1404,9 @@ main.site.is-revealed {
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-elevated), inset 0 1px 0 rgba(255,255,255,.12), inset 0 0 30px rgba(230,197,120,.06);
-  will-change: transform;
-  contain: layout style;
-  transition: transform var(--dur-medium) var(--ease-luxury),
+  contain: layout style paint;
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury),
               border-color var(--dur-medium) var(--ease-luxury);
 }
@@ -1495,9 +1504,9 @@ main.site.is-revealed {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   box-shadow: 0 4px 16px rgba(0,0,0,.22);
-  will-change: transform;
   contain: layout style;
-  transition: transform var(--dur-medium) var(--ease-luxury),
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-medium) var(--ease-luxury),
               border-color var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury);
 }
@@ -1620,9 +1629,9 @@ main.site.is-revealed {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-elevated), inset 0 1px 0 rgba(255,255,255,.12);
-  will-change: transform;
   contain: layout style;
-  transition: transform var(--dur-medium) var(--ease-luxury),
+  transition: opacity var(--dur-reveal) var(--ease-luxury),
+              transform var(--dur-medium) var(--ease-luxury),
               box-shadow var(--dur-medium) var(--ease-luxury),
               border-color var(--dur-medium) var(--ease-luxury);
 }
